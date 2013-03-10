@@ -1,0 +1,386 @@
+//  >>> Incomplete tree deletion, BFS traversal
+
+
+#include<stdio.h>
+#include<stdlib.h>
+#include<math.h>
+#include<string.h>
+
+
+// -----------> Implementing Binary Search Tree <-----------//
+
+struct tree
+{
+	int val;
+	struct tree *parent;
+	struct tree *left;
+	struct tree *right;
+};
+typedef struct tree Node;
+Node *ROOT = NULL;
+
+struct Queue
+{
+	Node *ptr;
+	Node *next;
+};
+struct Queue *Qhead;
+struct Queue *Qtail;
+
+struct List
+{
+	struct List *next;
+	int value;
+};
+
+struct Linklist
+{
+	struct Linklist *ptr;
+	struct List *Head;
+};
+typedef struct Linklist LL;
+LL *LL_HEAD = NULL;
+
+int insertion(Node *root,int x);
+int deletion(Node *root,int x);
+int delete(Node *ptr);
+
+Node* search(Node *root,int x);
+Node* minimum(Node *root);
+Node* maximum(Node *root);
+
+Node* predecessor(Node *root, int x);
+Node* successor(Node *root,int x);
+
+void inorder(Node *root);
+void preorder(Node *root);
+void postorder(Node *root);
+
+void print_to_root(Node *root,int x);
+
+
+// Various kinds of tree traversal
+
+// Level by level traversal
+// --------------->   Given a binary search tree, design an algorithm which creates a linked list of all the nodes at each depth (i.e., if you have a tree with depth D, you’ll have D linked lists).
+
+void BF_Traversal(Node *root);
+int BFS_tree(Node *root,Queue *Qh)
+
+int main(int argc,char *argv[])
+{
+	int value=0;
+
+	value = insertion(ROOT, 76);
+	value = insertion(ROOT, 34);
+	inorder(ROOT);
+	value = insertion(ROOT, 56);
+	value = insertion(ROOT, 5);
+	printf("\n");
+	inorder(ROOT);
+	value = insertion(ROOT, 98);
+	value = insertion(ROOT, 85);
+	printf("\n");
+	inorder(ROOT);
+	value = insertion(ROOT, 10);
+	value = insertion(ROOT, 103);
+	printf("\n");
+	inorder(ROOT);
+	value = insertion(ROOT, 12);
+	printf("\n");
+	inorder(ROOT);
+	printf("\n");
+	preorder(ROOT);
+	printf("\n");
+	postorder(ROOT);
+	printf("\n");
+	printf("%d",(search(ROOT, 10))->val);
+	printf("\n");
+	print_to_root(ROOT, 76);
+	printf("\n");
+	value = deletion(ROOT, 85);
+	inorder(ROOT);
+	printf("\n");
+	
+		
+	return 0;
+}
+
+// BF_Traversal
+void BF_Traversal(Node *root)
+{
+	struct Queue *Q = (struct Queue *)malloc(sizeof(struct Queue));	
+	Q->ptr = root;
+	Q->next = NULL;
+
+	Qhead = Q;
+
+	struct Queue *Q1 = (struct Queue *)malloc(sizeof(struct Queue));	
+	Qhead->next = Q1;
+	Q1->ptr = NULL	
+	Q1->next = NULL;
+	
+	Qhead->next = Q1;
+	Qtail = Q1;
+	return(BFS_tree(root, Qhead)); 
+	
+}
+
+
+int BFS_tree(Qh)
+{
+	Node *first;	
+	while( Qh->ptr != NULL)
+	{
+		first = Qh->ptr;
+		if(first->left != NULL)
+		{
+			struct Queue *Q = (struct Queue *)malloc(sizeof(struct Queue));	
+			Q->ptr = first->left;
+			Q->next = NULL;
+			Qtail->next = Q;
+			Qtail = Q;
+		}
+		if(first->right != NULL)
+		{
+			struct Queue *Q = (struct Queue *)malloc(sizeof(struct Queue));	
+			Q->ptr = first->right;
+			Q->next = NULL;
+			Qtail->next = Q;
+			Qtail = Q;
+		}	
+		Qh = Qh->next;	
+	}
+	
+	
+	
+	
+	
+	return 0;
+}
+
+
+
+int deletion(Node *root,int x)
+{
+	Node *ptr;
+	ptr = search(root, x);
+
+	return (delete(ptr));
+}
+
+
+int delete(Node *ptr)
+{
+	Node *temp;
+	Node *p;
+	if(ptr == NULL)
+		return -1;	
+	
+	if(ptr->left == NULL)
+	{
+		temp = ptr->right;
+		free(ptr);
+		ptr = temp;
+		return 0;
+	}
+	if(ptr->right == NULL)
+	{
+		temp = ptr->left;
+		free(ptr);
+		ptr = temp;
+		return 0;
+	}
+	else
+	{
+		temp = ptr->right;
+		p = NULL;
+	
+		while(temp->left != NULL)
+		{
+			p = temp;
+			temp = temp->left;
+		}	
+
+		ptr->val = temp->val;
+		if(p != NULL)
+			delete(p->left);	
+		else
+			delete(ptr->right);
+	}
+	
+	return 0;
+}
+
+Node* predecessor(Node *root, int x)
+{
+	Node *ptr;
+
+	ptr = search(root,x);
+	
+	if(ptr == NULL)
+		return NULL;
+	
+	if(ptr->left != NULL)
+		return(maximum(ptr->left));
+	else
+		return ptr->parent;
+}
+
+Node* successor(Node *root, int x)
+{
+	Node *ptr;
+
+	ptr = search(root,x);
+	
+	if(ptr == NULL)
+		return NULL;
+
+	if(ptr->right != NULL)
+		return(minimum(ptr->right));
+	else
+		return ptr->parent;
+}
+
+
+void print_to_root(Node *root,int x)
+{
+	Node *ptr;
+
+	ptr = search(root,x);
+	
+	if(ptr == NULL)
+		return;
+
+	while(ptr != NULL)
+	{
+		printf(" %d ",ptr->val);
+		ptr = ptr->parent;
+	}
+	return;
+}
+
+
+void inorder(Node *root)
+{
+	if(root == NULL)
+		return;
+	
+	inorder(root->left);
+	printf(" %d ",root->val);
+	inorder(root->right);
+}
+
+void preorder(Node *root)
+{
+	if(root == NULL)
+		return;
+	
+	printf(" %d ",root->val);
+	preorder(root->left);
+	preorder(root->right);
+}
+
+
+void postorder(Node *root)
+{
+	if(root == NULL)
+		return;
+	
+	postorder(root->left);
+	postorder(root->right);
+	printf(" %d ",root->val);
+}
+
+Node* search(Node *root,int x)
+{
+	if(root == NULL)
+		return NULL;
+
+	do
+	{
+		if(root->val == x)
+		{
+			return root;
+		}
+		else if(root->val > x)
+		{
+			root = root->left;
+		}
+		else
+		{
+			root = root->right;
+		}
+	}while(root != NULL);
+
+	printf("Element not found!");
+
+	return NULL;
+}
+
+Node* minimum(Node *root)
+{
+	if(root == NULL)
+		return NULL;
+
+	while(root->left != NULL)
+		root = root->left;
+
+	return root;
+}
+
+Node* maximum(Node *root)
+{
+	if(root == NULL)
+		return NULL;
+
+	while(root->right != NULL)
+		root = root->right;
+
+	return root;
+}
+
+
+int insertion(Node *root, int x)
+{
+	Node *newnode = (Node *) malloc(sizeof(Node));
+	newnode->val = x;
+	newnode->left = NULL;
+	newnode->right = NULL;
+
+	if(root == NULL)
+	{
+		newnode->parent = NULL;
+		ROOT = newnode;
+		return 0;
+	}
+	
+	Node *p;
+	p = root;
+
+	do
+	{
+		if(root->val > x)
+		{
+			p = root;
+			root = root->left;
+		}
+		else
+		{
+			p = root;
+			root = root->right;
+		}
+	}while(root != NULL);
+		
+	if(p->val > x)
+	{
+		p->left = newnode;
+	}
+	else
+	{
+		p->right = newnode;
+	}
+	newnode->parent = p;
+
+	return 0;
+}
