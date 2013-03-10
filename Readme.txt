@@ -1,7 +1,7 @@
 Data Structures In C
 
-With Implementation of data structures, there are some interview/programming questions related to that data structure whose problem definition and solution is also included in that implementation file.
-
+Implementation of various data structures in C.
+Also included some interview questions related to those data structures in corresponding implementation files.
 I am working on adding more questions and there solutions.
 Some data structure implementation may not work as required as i am still trying to improve those.
 
